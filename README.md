@@ -1,5 +1,10 @@
 # GreetingsApp
 
+# Powered by sofoste93
+    Stephane Sob Fouodji
+>   @sofoste93
+>
+
 An elegant way to say "Hello.." to the programming world. :-)
 -- Version 1.0
 -----------------
@@ -10,7 +15,7 @@ The application saves the strings entered by the user and returns the entered da
 The TextField is cleared after the "Enter" - command has been executed.
 The user can enter information as many as desired or can also close the application at any time by clicking the "close" - button.
 
--- Do you think this should be improved? ? Any suggestion is welcome. 
--- But don't forget: It's just a "Hello world!". 
+-- Do you think this should be improved? ? Any suggestion is welcome.
+-- But don't forget: It's just a "Hello world!".
 
 @sofoste Dec. 2020 :-)
