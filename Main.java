@@ -1,5 +1,12 @@
 /**
- * 
+ * 																				 								
+ *   ********    ********      ********    								******************
+ *  *           *        *    *        *   								********* ********
+ *  *          *          *   *   *    *   								********   *******
+ *    *****    *    **    *   *    * *     								*******     ******
+ *          *  *          *   *   *    *   								******       *****
+ *          *   *        *    *        *   								*****         ****
+ *  ********     ********      ********    								******************
  */
 package greetings;
 
@@ -20,10 +27,10 @@ public class Main extends GreetingsApp {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
+
 		//GreetingsApp g = new GreetingsApp();
 		//g.frame = new JFrame();
-		
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
