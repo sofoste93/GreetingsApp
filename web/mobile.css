@@ -1,0 +1,5 @@
+@media (max-width: 800px) {
+  main { grid-template-columns: minmax(0, 1fr); }
+  .console { min-width: 0; width: 100%; }
+  h1 { font-size: 36px; overflow-wrap: anywhere; }
+}

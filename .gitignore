@@ -1,0 +1,16 @@
+target/
+dist/
+.idea/
+*.iml
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+*.jks
+*.p12
+*.pfx
+*.pem
+*.key
+*.crt
+screenshots-local/
+

@@ -1,0 +1,55 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions: {contents: write}
+jobs:
+  package:
+    strategy:
+      matrix:
+        include:
+          - {os: windows-latest, label: Windows-x64, archive: zip}
+          - {os: ubuntu-latest, label: Linux-x64, archive: tar}
+          - {os: macos-13, label: macOS-x64, archive: tar}
+          - {os: macos-14, label: macOS-arm64, archive: tar}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: '17', cache: maven}
+      - run: mvn -B verify
+      - shell: bash
+        run: |
+          mkdir -p dist
+          jpackage --type app-image --name GreetingsApp --app-version 2.0.0 --vendor sofoste93 --input target --main-jar GreetingsApp.jar --main-class com.sofoste.greetings.GreetingsApp --dest dist
+          if [ "${{ matrix.archive }}" = "zip" ]; then 7z a "GreetingsApp-${{ matrix.label }}.zip" ./dist/GreetingsApp; else tar -czf "GreetingsApp-${{ matrix.label }}.tar.gz" -C dist GreetingsApp; fi
+      - name: Sign Windows launcher when a certificate is configured
+        if: runner.os == 'Windows' && env.CERTIFICATE_BASE64 != ''
+        shell: pwsh
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+        run: |
+          $bytes = [Convert]::FromBase64String($env:CERTIFICATE_BASE64)
+          [IO.File]::WriteAllBytes("certificate.pfx", $bytes)
+          signtool sign /fd SHA256 /td SHA256 /tr http://timestamp.digicert.com /f certificate.pfx /p $env:CERTIFICATE_PASSWORD dist/GreetingsApp/GreetingsApp.exe
+          7z u GreetingsApp-Windows-x64.zip ./dist/GreetingsApp/GreetingsApp.exe
+      - uses: actions/upload-artifact@v4
+        with: {name: 'GreetingsApp-${{ matrix.label }}', path: 'GreetingsApp-*.*'}
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {path: artifacts, merge-multiple: true}
+      - run: |
+          cd web && zip -r ../artifacts/GreetingsApp-Web-PWA.zip . && cd ..
+          cd artifacts
+          sha256sum GreetingsApp-* > SHA256SUMS.txt
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: GreetingsApp 2.0.0 · Event Horizon
+          body_path: CHANGELOG.md
+          files: |
+            artifacts/*
